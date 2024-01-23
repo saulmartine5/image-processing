@@ -1,5 +1,5 @@
 * {
-    background-color: lightgray;
+    background-color: rgb(48, 47, 47);
     padding: 0;
     margin: 0;
 }
@@ -22,14 +22,14 @@ ul{
   list-style: none;
 }
 .nav li span{
-  background-color: black;
-  color: white;
+  background-color: rgb(41, 39, 39);
+  color: rgb(218, 16, 16);
   text-decoration: none;
   padding: 10px 15px;
   display: block;
 }
 .nav li span:hover{
-  background-color: darkolivegreen;
+  background-color: rgb(31, 214, 247);
   cursor: pointer;
 }
 .nav > li{
@@ -37,8 +37,8 @@ ul{
 }
 
 .nav ul li label{
-  background-color: black;
-  color: white;
+  background-color: rgb(5, 5, 5);
+  color: rgb(236, 19, 19);
   padding: 10px 15px;
 }
 .nav li ul{
@@ -79,5 +79,5 @@ output li{
 }
 #color{
   padding: 2px 20px;
-  background-color: black;
+  background-color: rgb(44, 41, 41);
 }

@@ -1,7 +1,7 @@
 import { ImageLocal } from "./ImageLocal.js";
 import { ImageType } from "./ImageType.js";
 import { MathImg } from "./MathImg.js";
-import { Particle } from "./particle.js";
+import { Particle, DynamicRGBEdges, RainbowEdges } from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from './canvasLocal.js';
 var lienzo1;
@@ -387,6 +387,36 @@ function tAfin(evt) {
     var imagenSal = new ImageType(pantalla1, imgLocal.getImage());
     imagenSal.imageArray2DtoData(pantalla2, MathImg.tAfin(imagenSal, factores));
 }
+//comienzo del proyecto
+var dynamicRGBEdges;
+function initDynamicRGBEdges() {
+    dynamicRGBEdges = new DynamicRGBEdges(ctx, 20);
+}
+function animateDynamicRGBEdges() {
+    ctx.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    ctx.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    dynamicRGBEdges.applyEffect();
+    requestAnimationFrame(animateDynamicRGBEdges);
+}
+function bordesRGB() {
+    initDynamicRGBEdges();
+    animateDynamicRGBEdges();
+}
+//efecto2 
+var rainbowEdges;
+function initRainbowEdges() {
+    rainbowEdges = new RainbowEdges(ctx, 20, 800); // Aumenté el intervalo a 500 ms
+}
+function animateRainbowEdges() {
+    ctx.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    ctx.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    rainbowEdges.applyEffect();
+    requestAnimationFrame(animateRainbowEdges);
+}
+function RGB2() {
+    initRainbowEdges();
+    animateRainbowEdges();
+}
 lienzo1.addEventListener('mousemove', handleMouse);
 lienzo1.addEventListener("mousemove", imgLocal.drawSmallImg);
 document.getElementById('files').addEventListener('change', imgLocal.handleFileSelect, false);
@@ -452,3 +482,6 @@ document.getElementById("op-rotacion").addEventListener('click', rotarImagen2, f
 document.getElementById("op-shearingX").addEventListener('click', shearingX, false);
 document.getElementById("op-shearingY").addEventListener('click', shearingY, false);
 document.getElementById("op-afin").addEventListener('click', tAfin, false);
+//operaciones de proyecto 
+document.getElementById("bordesRGB").addEventListener('click', bordesRGB, false);
+document.getElementById("bordesRGB2").addEventListener('click', RGB2, false);
