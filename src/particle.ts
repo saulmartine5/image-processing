@@ -345,3 +345,138 @@ export class AnimatedRainbow {
     this.hue = (this.hue + 0.5) % 360;
   }
 }
+
+export class InfiniteTrianglesEffect {
+  protected ctx: CanvasRenderingContext2D;
+  protected width: number;
+  protected height: number;
+  protected triangles: Triangle[];
+
+  constructor(ctx: CanvasRenderingContext2D, width: number, height: number) {
+    this.ctx = ctx;
+    this.width = width;
+    this.height = height;
+    this.triangles = [];
+
+    // Crea algunos triángulos iniciales
+    for (let i = 0; i < 10; i++) {
+      this.createRandomTriangle();
+    }
+  }
+
+  protected createRandomTriangle() {
+    const triangle = new Triangle(
+      Math.random() * this.width,
+      Math.random() * this.height,
+      Math.random() * 30 + 10,
+      getRandomColor(),
+      this.ctx
+    );
+
+    this.triangles.push(triangle);
+  }
+
+  public update() {
+    // Actualiza la posición de los triángulos
+    for (const triangle of this.triangles) {
+      triangle.update();
+    }
+
+    // Elimina triángulos que salen del lienzo y crea nuevos para reemplazarlos
+    this.triangles = this.triangles.filter(triangle => !triangle.isOutsideCanvas());
+    while (this.triangles.length < 10) {
+      this.createRandomTriangle();
+    }
+  }
+
+  public draw() {
+    // Dibuja los triángulos
+    for (const triangle of this.triangles) {
+      triangle.draw();
+    }
+  }
+}
+
+export class Triangle {
+  protected x: number;
+  protected y: number;
+  protected size: number;
+  protected color: string;
+  protected ctx: CanvasRenderingContext2D;
+
+  constructor(x: number, y: number, size: number, color: string, ctx: CanvasRenderingContext2D) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.color = color;
+    this.ctx = ctx;
+  }
+
+  public update() {
+    // Mueve el triángulo hacia abajo
+    this.y += 1;
+
+    // Reinicia la posición si sale del lienzo
+    if (this.y > this.ctx.canvas.height) {
+      this.y = 0;
+      this.x = Math.random() * this.ctx.canvas.width;
+      this.size = Math.random() * 30 + 10;
+      this.color = getRandomColor();
+    }
+  }
+
+  public draw() {
+    // Dibuja el triángulo
+    this.ctx.fillStyle = this.color;
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.x, this.y);
+    this.ctx.lineTo(this.x + this.size, this.y);
+    this.ctx.lineTo(this.x + this.size / 2, this.y + this.size);
+    this.ctx.closePath();
+    this.ctx.fill();
+  }
+
+  public isOutsideCanvas() {
+
+    return this.y > this.ctx.canvas.height + this.size;
+  }
+}
+
+function getRandomColor() {
+ 
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}
+
+
+export class LightTrailsEffect {
+  protected x: number;
+  protected y: number;
+  protected width: number;
+  protected height: number;
+  protected ctx: CanvasRenderingContext2D;
+  protected speed: number;
+  protected color: string;
+
+  constructor(x: number, y: number, width: number, height: number, ctx: CanvasRenderingContext2D, speed: number, color: string) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.ctx = ctx;
+    this.speed = speed;
+    this.color = color;
+  }
+
+  public update() {
+    this.x += this.speed;
+
+    if (this.x > this.width) {
+      this.x = 0;
+    }
+  }
+
+  public draw() {
+    this.ctx.fillStyle = this.color;
+    this.ctx.fillRect(this.x, this.y, 5, this.height); // Ajusta el tamaño de la tira de luz
+  }
+}

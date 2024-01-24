@@ -1,7 +1,7 @@
 import { ImageLocal } from "./ImageLocal.js";
 import { ImageType } from "./ImageType.js";
 import { MathImg } from "./MathImg.js";
-import { Particle, DynamicRGBNoise, AnimatedRGBBorders, Snowflake, AnimatedRainbow } from "./particle.js";
+import { Particle, DynamicRGBNoise, AnimatedRGBBorders, Snowflake, AnimatedRainbow, InfiniteTrianglesEffect, LightTrailsEffect } from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from './canvasLocal.js';
 var lienzo1;
@@ -458,6 +458,44 @@ function Arcoiris() {
     initAnimatedRainbow();
     animateAnimatedRainbow();
 }
+//triangulos infinits
+function getRandomColor() {
+    // Genera un color hexadecimal aleatorio
+    return "#".concat(Math.floor(Math.random() * 16777215).toString(16));
+}
+var infiniteTrianglesEffect;
+function initInfiniteTrianglesEffect() {
+    infiniteTrianglesEffect = new InfiniteTrianglesEffect(ctx, pantalla2.canvas.width, pantalla2.canvas.height);
+}
+function animateInfiniteTrianglesEffect() {
+    var img = imgLocal.getImage();
+    pantalla2.drawImage(img, 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    infiniteTrianglesEffect.update();
+    infiniteTrianglesEffect.draw();
+    requestAnimationFrame(animateInfiniteTrianglesEffect);
+}
+function triangulos() {
+    initInfiniteTrianglesEffect();
+    animateInfiniteTrianglesEffect();
+}
+//LINEAS DE COLOR
+var lightTrailsEffect;
+function initLightTrailsEffect() {
+    lightTrailsEffect = new LightTrailsEffect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height, ctx, 5, 'rgba(255, 255, 255, 0.1)');
+}
+function animateLightTrailsEffect() {
+    var img = imgLocal.getImage();
+    // Dibuja la imagen original en el fondo
+    pantalla2.drawImage(img, 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+    // Actualiza y dibuja las tiras de luz
+    lightTrailsEffect.update();
+    lightTrailsEffect.draw();
+    requestAnimationFrame(animateLightTrailsEffect);
+}
+function Lineasdecolor() {
+    initLightTrailsEffect();
+    animateLightTrailsEffect();
+}
 lienzo1.addEventListener('mousemove', handleMouse);
 lienzo1.addEventListener("mousemove", imgLocal.drawSmallImg);
 document.getElementById('files').addEventListener('change', imgLocal.handleFileSelect, false);
@@ -528,3 +566,5 @@ document.getElementById("Bordesruido").addEventListener('click', Bordesruido, fa
 document.getElementById("Bordergb").addEventListener('click', Bordergb, false);
 document.getElementById("Snowfall").addEventListener('click', Snowfall, false);
 document.getElementById("Arcoiris").addEventListener('click', Arcoiris, false);
+document.getElementById("triangulos").addEventListener('click', triangulos, false);
+document.getElementById("lineasdecolor").addEventListener('click', Lineasdecolor, false);

@@ -262,3 +262,101 @@ var AnimatedRainbow = /** @class */ (function () {
     return AnimatedRainbow;
 }());
 export { AnimatedRainbow };
+var InfiniteTrianglesEffect = /** @class */ (function () {
+    function InfiniteTrianglesEffect(ctx, width, height) {
+        this.ctx = ctx;
+        this.width = width;
+        this.height = height;
+        this.triangles = [];
+        // Crea algunos triángulos iniciales
+        for (var i = 0; i < 10; i++) {
+            this.createRandomTriangle();
+        }
+    }
+    InfiniteTrianglesEffect.prototype.createRandomTriangle = function () {
+        var triangle = new Triangle(Math.random() * this.width, Math.random() * this.height, Math.random() * 30 + 10, getRandomColor(), this.ctx);
+        this.triangles.push(triangle);
+    };
+    InfiniteTrianglesEffect.prototype.update = function () {
+        // Actualiza la posición de los triángulos
+        for (var _i = 0, _a = this.triangles; _i < _a.length; _i++) {
+            var triangle = _a[_i];
+            triangle.update();
+        }
+        // Elimina triángulos que salen del lienzo y crea nuevos para reemplazarlos
+        this.triangles = this.triangles.filter(function (triangle) { return !triangle.isOutsideCanvas(); });
+        while (this.triangles.length < 10) {
+            this.createRandomTriangle();
+        }
+    };
+    InfiniteTrianglesEffect.prototype.draw = function () {
+        // Dibuja los triángulos
+        for (var _i = 0, _a = this.triangles; _i < _a.length; _i++) {
+            var triangle = _a[_i];
+            triangle.draw();
+        }
+    };
+    return InfiniteTrianglesEffect;
+}());
+export { InfiniteTrianglesEffect };
+var Triangle = /** @class */ (function () {
+    function Triangle(x, y, size, color, ctx) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.color = color;
+        this.ctx = ctx;
+    }
+    Triangle.prototype.update = function () {
+        // Mueve el triángulo hacia abajo
+        this.y += 1;
+        // Reinicia la posición si sale del lienzo
+        if (this.y > this.ctx.canvas.height) {
+            this.y = 0;
+            this.x = Math.random() * this.ctx.canvas.width;
+            this.size = Math.random() * 30 + 10;
+            this.color = getRandomColor();
+        }
+    };
+    Triangle.prototype.draw = function () {
+        // Dibuja el triángulo
+        this.ctx.fillStyle = this.color;
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.x, this.y);
+        this.ctx.lineTo(this.x + this.size, this.y);
+        this.ctx.lineTo(this.x + this.size / 2, this.y + this.size);
+        this.ctx.closePath();
+        this.ctx.fill();
+    };
+    Triangle.prototype.isOutsideCanvas = function () {
+        return this.y > this.ctx.canvas.height + this.size;
+    };
+    return Triangle;
+}());
+export { Triangle };
+function getRandomColor() {
+    return "#".concat(Math.floor(Math.random() * 16777215).toString(16));
+}
+var LightTrailsEffect = /** @class */ (function () {
+    function LightTrailsEffect(x, y, width, height, ctx, speed, color) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.ctx = ctx;
+        this.speed = speed;
+        this.color = color;
+    }
+    LightTrailsEffect.prototype.update = function () {
+        this.x += this.speed;
+        if (this.x > this.width) {
+            this.x = 0;
+        }
+    };
+    LightTrailsEffect.prototype.draw = function () {
+        this.ctx.fillStyle = this.color;
+        this.ctx.fillRect(this.x, this.y, 5, this.height); // Ajusta el tamaño de la tira de luz
+    };
+    return LightTrailsEffect;
+}());
+export { LightTrailsEffect };
