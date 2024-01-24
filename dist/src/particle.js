@@ -140,3 +140,72 @@ var DynamicRGBNoise = /** @class */ (function () {
     return DynamicRGBNoise;
 }());
 export { DynamicRGBNoise };
+var AnimatedRGBBorders = /** @class */ (function () {
+    function AnimatedRGBBorders(ctx, img, borderWidth, frameCount) {
+        this.ctx = ctx;
+        this.img = img;
+        this.borderWidth = borderWidth;
+        this.frameCount = frameCount;
+        this.currentFrame = 0;
+        this.colorIndex = 0;
+    }
+    AnimatedRGBBorders.prototype.applyEffect = function () {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.drawImage(this.img, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        var imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        var data = imageData.data;
+        for (var y = 0; y < this.borderWidth; y++) {
+            for (var x = 0; x < imageData.width; x++) {
+                var index = (y * imageData.width + x) * 4;
+                this.applyColor(data, index);
+            }
+        }
+        for (var y = imageData.height - this.borderWidth; y < imageData.height; y++) {
+            for (var x = 0; x < imageData.width; x++) {
+                var index = (y * imageData.width + x) * 4;
+                this.applyColor(data, index);
+            }
+        }
+        for (var x = 0; x < this.borderWidth; x++) {
+            for (var y = 0; y < imageData.height; y++) {
+                var index = (y * imageData.width + x) * 4;
+                this.applyColor(data, index);
+            }
+        }
+        for (var x = imageData.width - this.borderWidth; x < imageData.width; x++) {
+            for (var y = 0; y < imageData.height; y++) {
+                var index = (y * imageData.width + x) * 4;
+                this.applyColor(data, index);
+            }
+        }
+        this.ctx.putImageData(imageData, 0, 0);
+        this.updateColor();
+        this.updateFrame();
+    };
+    AnimatedRGBBorders.prototype.applyColor = function (data, index) {
+        var color = this.getCurrentColor();
+        data[index] = color[0];
+        data[index + 1] = color[1];
+        data[index + 2] = color[2];
+    };
+    AnimatedRGBBorders.prototype.getCurrentColor = function () {
+        switch (this.colorIndex) {
+            case 0:
+                return [255, 0, 0]; // Red
+            case 1:
+                return [0, 255, 0]; // Green
+            case 2:
+                return [0, 0, 255]; // Blue
+        }
+    };
+    AnimatedRGBBorders.prototype.updateColor = function () {
+        if (this.currentFrame % this.frameCount === 0) {
+            this.colorIndex = (this.colorIndex + 1) % 3;
+        }
+    };
+    AnimatedRGBBorders.prototype.updateFrame = function () {
+        this.currentFrame = (this.currentFrame + 1) % (3 * this.frameCount);
+    };
+    return AnimatedRGBBorders;
+}());
+export { AnimatedRGBBorders };

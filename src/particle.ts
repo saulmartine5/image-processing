@@ -187,3 +187,89 @@ export class DynamicRGBNoise {
     this.ctx.putImageData(imageData, 0, 0);
   }
 }
+
+export class AnimatedRGBBorders {
+  protected ctx: CanvasRenderingContext2D;
+  protected img: HTMLImageElement;
+  protected borderWidth: number;
+  protected frameCount: number;
+  protected currentFrame: number;
+  protected colorIndex: number;
+
+  constructor(ctx: CanvasRenderingContext2D, img: HTMLImageElement, borderWidth: number, frameCount: number) {
+    this.ctx = ctx;
+    this.img = img;
+    this.borderWidth = borderWidth;
+    this.frameCount = frameCount;
+    this.currentFrame = 0;
+    this.colorIndex = 0;
+  }
+
+  public applyEffect() {
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.drawImage(this.img, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+    const imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    const data = imageData.data;
+
+    for (let y = 0; y < this.borderWidth; y++) {
+      for (let x = 0; x < imageData.width; x++) {
+        const index = (y * imageData.width + x) * 4;
+        this.applyColor(data, index);
+      }
+    }
+
+    for (let y = imageData.height - this.borderWidth; y < imageData.height; y++) {
+      for (let x = 0; x < imageData.width; x++) {
+        const index = (y * imageData.width + x) * 4;
+        this.applyColor(data, index);
+      }
+    }
+
+    for (let x = 0; x < this.borderWidth; x++) {
+      for (let y = 0; y < imageData.height; y++) {
+        const index = (y * imageData.width + x) * 4;
+        this.applyColor(data, index);
+      }
+    }
+
+    for (let x = imageData.width - this.borderWidth; x < imageData.width; x++) {
+      for (let y = 0; y < imageData.height; y++) {
+        const index = (y * imageData.width + x) * 4;
+        this.applyColor(data, index);
+      }
+    }
+
+    this.ctx.putImageData(imageData, 0, 0);
+    this.updateColor();
+    this.updateFrame();
+  }
+
+  protected applyColor(data: Uint8ClampedArray, index: number) {
+    const color = this.getCurrentColor();
+    data[index] = color[0];
+    data[index + 1] = color[1];
+    data[index + 2] = color[2];
+  }
+
+  protected getCurrentColor() {
+    switch (this.colorIndex) {
+      case 0:
+        return [255, 0, 0]; // Red
+      case 1:
+        return [0, 255, 0]; // Green
+      case 2:
+        return [0, 0, 255]; // Blue
+    }
+  }
+
+  protected updateColor() {
+    if (this.currentFrame % this.frameCount === 0) {
+      this.colorIndex = (this.colorIndex + 1) % 3;
+    }
+  }
+
+  protected updateFrame() {
+    this.currentFrame = (this.currentFrame + 1) % (3 * this.frameCount);
+  }
+}

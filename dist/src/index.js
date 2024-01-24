@@ -1,7 +1,7 @@
 import { ImageLocal } from "./ImageLocal.js";
 import { ImageType } from "./ImageType.js";
 import { MathImg } from "./MathImg.js";
-import { Particle, DynamicRGBNoise } from "./particle.js";
+import { Particle, DynamicRGBNoise, AnimatedRGBBorders } from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from './canvasLocal.js';
 var lienzo1;
@@ -401,6 +401,20 @@ function Bordesruido() {
     initDynamicRGBNoiseEffect();
     animateDynamicRGBNoiseEffect();
 }
+// funcion de ruidos en rgb 
+var animatedRGBBordersEffect;
+function initAnimatedRGBBordersEffect() {
+    var img = imgLocal.getImage();
+    animatedRGBBordersEffect = new AnimatedRGBBorders(pantalla2, img, 20, 30);
+}
+function animateAnimatedRGBBordersEffect() {
+    animatedRGBBordersEffect.applyEffect();
+    requestAnimationFrame(animateAnimatedRGBBordersEffect);
+}
+function Bordergb() {
+    initAnimatedRGBBordersEffect();
+    animateAnimatedRGBBordersEffect();
+}
 lienzo1.addEventListener('mousemove', handleMouse);
 lienzo1.addEventListener("mousemove", imgLocal.drawSmallImg);
 document.getElementById('files').addEventListener('change', imgLocal.handleFileSelect, false);
@@ -468,3 +482,4 @@ document.getElementById("op-shearingY").addEventListener('click', shearingY, fal
 document.getElementById("op-afin").addEventListener('click', tAfin, false);
 //operaciones de proyecto 
 document.getElementById("Bordesruido").addEventListener('click', Bordesruido, false);
+document.getElementById("Bordergb").addEventListener('click', Bordergb, false);
