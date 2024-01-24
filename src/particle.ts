@@ -480,3 +480,70 @@ export class LightTrailsEffect {
     this.ctx.fillRect(this.x, this.y, 5, this.height); // Ajusta el tamaño de la tira de luz
   }
 }
+
+
+export class ColorTrails {
+  protected ctx: CanvasRenderingContext2D;
+  protected imageWidth: number;
+  protected imageHeight: number;
+  protected stripWidth: number;
+  protected colors: string[];
+  protected strips: number[];
+
+  constructor(ctx: CanvasRenderingContext2D, imageWidth: number, imageHeight: number, stripWidth: number, colors: string[]) {
+    this.ctx = ctx;
+    this.imageWidth = imageWidth;
+    this.imageHeight = imageHeight;
+    this.stripWidth = stripWidth;
+    this.colors = colors;
+    this.strips = [];
+    for (let i = 0; i < Math.ceil(imageWidth / stripWidth); i++) {
+      this.strips.push(0);
+    }
+  }
+
+  public update() {
+    this.strips = this.strips.map((strip) => (strip + 2) % this.imageHeight); // Incrementé el valor para dejar un rastro más visible
+  }
+
+  public draw(image: HTMLImageElement) {
+    for (let i = 0; i < this.strips.length; i++) {
+      const x = i * this.stripWidth;
+      const y = this.strips[i];
+      const color = this.colors[i % this.colors.length];
+
+      // Dibuja la línea vertical de luz
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y);
+      this.ctx.lineTo(x, y + this.stripWidth);
+      this.ctx.strokeStyle = color;
+      this.ctx.lineWidth = this.stripWidth;
+      this.ctx.stroke();
+    }
+
+    // Dibuja la imagen original en el fondo
+    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.drawImage(image, 0, 0, this.imageWidth, this.imageHeight);
+
+    // Dibuja las tiras de luz con blending para dejar un rastro
+    this.ctx.globalCompositeOperation = 'lighter';
+    this.ctx.globalAlpha = 0.2; // Ajusta la opacidad según sea necesario
+
+    for (let i = 0; i < this.strips.length; i++) {
+      const x = i * this.stripWidth;
+      const y = this.strips[i];
+      const color = this.colors[i % this.colors.length];
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y);
+      this.ctx.lineTo(x, y + this.stripWidth);
+      this.ctx.strokeStyle = color;
+      this.ctx.lineWidth = this.stripWidth;
+      this.ctx.stroke();
+    }
+
+    // Restaura los ajustes globales
+    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.globalAlpha = 1.0;
+  }
+}
