@@ -273,3 +273,75 @@ export class AnimatedRGBBorders {
     this.currentFrame = (this.currentFrame + 1) % (3 * this.frameCount);
   }
 }
+
+
+export class Snowflake {
+  protected x: number;
+  protected y: number;
+  protected size: number;
+  protected ctx: CanvasRenderingContext2D;
+  protected fallSpeed: number;
+
+  constructor(x: number, y: number, size: number, ctx: CanvasRenderingContext2D) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.ctx = ctx;
+    this.fallSpeed = Math.random() * 2 + 1; // Velocidad de caída aleatoria
+  }
+
+  public update() {
+    this.y += this.fallSpeed;
+
+    // Reinicia la posición si la escarcha de nieve cae fuera del lienzo
+    if (this.y > this.ctx.canvas.height) {
+      this.y = 0;
+    }
+  }
+
+  public draw() {
+    this.ctx.fillStyle = 'white';
+    this.ctx.beginPath();
+    this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+}
+
+// arcoiris 
+
+
+export class AnimatedRainbow {
+  private x: number;
+  private y: number;
+  private radius: number;
+  private ctx: CanvasRenderingContext2D;
+  private hue: number;
+
+  constructor(x: number, y: number, radius: number, ctx: CanvasRenderingContext2D) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.ctx = ctx;
+    this.hue = 0;
+  }
+
+  public draw() {
+    const gradient = this.ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+    gradient.addColorStop(0, `hsl(${this.hue}, 100%, 50%)`);
+    gradient.addColorStop(1 / 6, `hsl(${this.hue + 60}, 100%, 50%)`);
+    gradient.addColorStop(2 / 6, `hsl(${this.hue + 120}, 100%, 50%)`);
+    gradient.addColorStop(3 / 6, `hsl(${this.hue + 180}, 100%, 50%)`);
+    gradient.addColorStop(4 / 6, `hsl(${this.hue + 240}, 100%, 50%)`);
+    gradient.addColorStop(5 / 6, `hsl(${this.hue + 300}, 100%, 50%)`);
+    gradient.addColorStop(1, `hsl(${this.hue + 360}, 100%, 50%)`);
+
+    this.ctx.fillStyle = gradient;
+    this.ctx.beginPath();
+    this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    this.ctx.closePath();
+    this.ctx.fill();
+
+    // Incrementa el tono (hue) para cambiar los colores en cada fotograma
+    this.hue = (this.hue + 0.5) % 360;
+  }
+}

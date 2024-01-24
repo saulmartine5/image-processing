@@ -2,7 +2,7 @@
 import { ImageLocal } from "./ImageLocal.js";
 import { ImageType } from "./ImageType.js";
 import { MathImg } from "./MathImg.js";
-import { Particle,DynamicRGBNoise,AnimatedRGBBorders} from "./particle.js";
+import { Particle,DynamicRGBNoise,AnimatedRGBBorders, Snowflake, AnimatedRainbow} from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from './canvasLocal.js';
 
@@ -460,6 +460,73 @@ function Bordergb() {
   animateAnimatedRGBBordersEffect();
 }
 
+/// snow
+
+
+let snowflakes: Snowflake[] = [];
+
+function initSnowfall() {
+  for (let i = 0; i < 100; i++) {
+    let x = Math.random() * pantalla2.canvas.width;
+    let y = Math.random() * pantalla2.canvas.height;
+    let size = Math.random() * 3 + 1;
+    snowflakes.push(new Snowflake(x, y, size, ctx));
+  }
+}
+
+
+function animateSnowfall() {
+  pantalla2.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+
+  // Dibuja la imagen original
+  pantalla2.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+
+  // Dibuja la lluvia de escarcha
+  for (let i = 0; i < snowflakes.length; i++) {
+    snowflakes[i].update();
+    snowflakes[i].draw();
+  }
+
+  requestAnimationFrame(animateSnowfall);
+}
+
+
+
+
+
+function Snowfall() {
+  initSnowfall();
+  animateSnowfall();
+}
+///////////////////
+
+let animatedRainbow: AnimatedRainbow;
+
+function initAnimatedRainbow() {
+  const x = pantalla2.canvas.width / 2;
+  const y = pantalla2.canvas.height / 2;
+  const radius = 100;
+  animatedRainbow = new AnimatedRainbow(x, y, radius, pantalla2);
+}
+
+function animateAnimatedRainbow() {
+  pantalla2.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+
+
+  pantalla2.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
+
+
+  animatedRainbow.draw();
+
+ 
+  requestAnimationFrame(animateAnimatedRainbow);
+}
+
+
+function Arcoiris() {
+  initAnimatedRainbow();
+  animateAnimatedRainbow();
+}
 
 
 
@@ -544,3 +611,6 @@ document.getElementById("op-afin").addEventListener('click', tAfin, false);
 //operaciones de proyecto 
 document.getElementById("Bordesruido").addEventListener('click', Bordesruido, false);
 document.getElementById("Bordergb").addEventListener('click', Bordergb, false);
+document.getElementById("Snowfall").addEventListener('click', Snowfall, false);
+document.getElementById("Arcoiris").addEventListener('click', Arcoiris, false);
+

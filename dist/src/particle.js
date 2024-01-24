@@ -209,3 +209,56 @@ var AnimatedRGBBorders = /** @class */ (function () {
     return AnimatedRGBBorders;
 }());
 export { AnimatedRGBBorders };
+var Snowflake = /** @class */ (function () {
+    function Snowflake(x, y, size, ctx) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.ctx = ctx;
+        this.fallSpeed = Math.random() * 2 + 1; // Velocidad de caída aleatoria
+    }
+    Snowflake.prototype.update = function () {
+        this.y += this.fallSpeed;
+        // Reinicia la posición si la escarcha de nieve cae fuera del lienzo
+        if (this.y > this.ctx.canvas.height) {
+            this.y = 0;
+        }
+    };
+    Snowflake.prototype.draw = function () {
+        this.ctx.fillStyle = 'white';
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        this.ctx.fill();
+    };
+    return Snowflake;
+}());
+export { Snowflake };
+// arcoiris 
+var AnimatedRainbow = /** @class */ (function () {
+    function AnimatedRainbow(x, y, radius, ctx) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.ctx = ctx;
+        this.hue = 0;
+    }
+    AnimatedRainbow.prototype.draw = function () {
+        var gradient = this.ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+        gradient.addColorStop(0, "hsl(".concat(this.hue, ", 100%, 50%)"));
+        gradient.addColorStop(1 / 6, "hsl(".concat(this.hue + 60, ", 100%, 50%)"));
+        gradient.addColorStop(2 / 6, "hsl(".concat(this.hue + 120, ", 100%, 50%)"));
+        gradient.addColorStop(3 / 6, "hsl(".concat(this.hue + 180, ", 100%, 50%)"));
+        gradient.addColorStop(4 / 6, "hsl(".concat(this.hue + 240, ", 100%, 50%)"));
+        gradient.addColorStop(5 / 6, "hsl(".concat(this.hue + 300, ", 100%, 50%)"));
+        gradient.addColorStop(1, "hsl(".concat(this.hue + 360, ", 100%, 50%)"));
+        this.ctx.fillStyle = gradient;
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        this.ctx.closePath();
+        this.ctx.fill();
+        // Incrementa el tono (hue) para cambiar los colores en cada fotograma
+        this.hue = (this.hue + 0.5) % 360;
+    };
+    return AnimatedRainbow;
+}());
+export { AnimatedRainbow };
