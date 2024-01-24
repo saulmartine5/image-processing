@@ -120,122 +120,70 @@ export class ParticleText {
 
 }
 
-export class DynamicRGBEdges {
+export class DynamicRGBNoise {
   protected ctx: CanvasRenderingContext2D;
-  protected imgData: ImageData;
-  protected imgWidth: number;
-  protected imgHeight: number;
-  protected edgeSize: number;
+  protected img: HTMLImageElement;
+  protected borderWidth: number;
+  protected noiseIntensity: number;
 
-  constructor(ctx: CanvasRenderingContext2D, edgeSize: number) {
+  constructor(ctx: CanvasRenderingContext2D, img: HTMLImageElement, borderWidth: number, noiseIntensity: number) {
     this.ctx = ctx;
-    this.imgWidth = ctx.canvas.width;
-    this.imgHeight = ctx.canvas.height;
-    this.imgData = ctx.getImageData(0, 0, this.imgWidth, this.imgHeight);
-    this.edgeSize = edgeSize;
+    this.img = img;
+    this.borderWidth = borderWidth;
+    this.noiseIntensity = noiseIntensity;
   }
 
   public applyEffect() {
-    const data = this.imgData.data;
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.drawImage(this.img, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-    for (let y = 0; y < this.imgHeight; y++) {
-      for (let x = 0; x < this.imgWidth; x++) {
-        const index = (y * this.imgWidth + x) * 4;
+    const imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    const data = imageData.data;
 
-        // Verifica si el píxel está en el borde
-        if (x < this.edgeSize || x >= this.imgWidth - this.edgeSize || y < this.edgeSize || y >= this.imgHeight - this.edgeSize) {
-          // Aplica un cambio dinámico en los componentes RGB
-          data[index] = data[index] + Math.random() * 50 - 25; // Red
-          data[index + 1] = data[index + 1] + Math.random() * 50 - 25; // Green
-          data[index + 2] = data[index + 2] + Math.random() * 50 - 25; // Blue
-        }
+    for (let y = 0; y < this.borderWidth; y++) {
+      for (let x = 0; x < imageData.width; x++) {
+        const index = (y * imageData.width + x) * 4;
+
+        // Aplica ruido al canal rojo, verde y azul
+        data[index] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 1] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 2] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
       }
     }
 
-    this.ctx.putImageData(this.imgData, 0, 0);
-  }
-}
+    for (let y = imageData.height - this.borderWidth; y < imageData.height; y++) {
+      for (let x = 0; x < imageData.width; x++) {
+        const index = (y * imageData.width + x) * 4;
 
-export class RainbowEdges {
-  protected ctx: CanvasRenderingContext2D;
-  protected imgData: ImageData;
-  protected imgWidth: number;
-  protected imgHeight: number;
-  protected edgeSize: number;
-  protected currentColor: string;
-  protected colorChangeInterval: number;
-  protected lastColorChangeTime: number;
-
-  constructor(ctx: CanvasRenderingContext2D, edgeSize: number, colorChangeInterval: number) {
-    this.ctx = ctx;
-    this.imgWidth = ctx.canvas.width;
-    this.imgHeight = ctx.canvas.height;
-    this.imgData = ctx.getImageData(0, 0, this.imgWidth, this.imgHeight);
-    this.edgeSize = edgeSize;
-    this.currentColor = 'red';
-    this.colorChangeInterval = colorChangeInterval;
-    this.lastColorChangeTime = 0;
-  }
-
-  public applyEffect() {
-    const currentTime = Date.now();
-    const elapsedSinceLastColorChange = currentTime - this.lastColorChangeTime;
-
-    // Cambia dinámicamente el color entre rojo, verde y azul con el intervalo especificado
-    if (elapsedSinceLastColorChange > this.colorChangeInterval) {
-      this.updateColor();
-      this.lastColorChangeTime = currentTime;
-    }
-
-    const data = this.imgData.data;
-
-    for (let y = 0; y < this.imgHeight; y++) {
-      for (let x = 0; x < this.imgWidth; x++) {
-        const index = (y * this.imgWidth + x) * 4;
-
-        // Verifica si el píxel está en el borde
-        if (x < this.edgeSize || x >= this.imgWidth - this.edgeSize || y < this.edgeSize || y >= this.imgHeight - this.edgeSize) {
-          // Aplica el color actual al píxel en el borde
-          this.applyCurrentColor(data, index);
-        }
+        // Aplica ruido al canal rojo, verde y azul
+        data[index] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 1] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 2] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
       }
     }
 
-    this.ctx.putImageData(this.imgData, 0, 0);
-  }
+    for (let x = 0; x < this.borderWidth; x++) {
+      for (let y = 0; y < imageData.height; y++) {
+        const index = (y * imageData.width + x) * 4;
 
-  protected applyCurrentColor(data: Uint8ClampedArray, index: number) {
-    switch (this.currentColor) {
-      case 'red':
-        data[index] = 255; // Red
-        data[index + 1] = 0; // Green
-        data[index + 2] = 0; // Blue
-        break;
-      case 'green':
-        data[index] = 0; // Red
-        data[index + 1] = 255; // Green
-        data[index + 2] = 0; // Blue
-        break;
-      case 'blue':
-        data[index] = 0; // Red
-        data[index + 1] = 0; // Green
-        data[index + 2] = 255; // Blue
-        break;
+        // Aplica ruido al canal rojo, verde y azul
+        data[index] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 1] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 2] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+      }
     }
-  }
 
-  protected updateColor() {
-    // Cambia dinámicamente entre rojo, verde y azul
-    switch (this.currentColor) {
-      case 'red':
-        this.currentColor = 'green';
-        break;
-      case 'green':
-        this.currentColor = 'blue';
-        break;
-      case 'blue':
-        this.currentColor = 'red';
-        break;
+    for (let x = imageData.width - this.borderWidth; x < imageData.width; x++) {
+      for (let y = 0; y < imageData.height; y++) {
+        const index = (y * imageData.width + x) * 4;
+
+        // Aplica ruido al canal rojo, verde y azul
+        data[index] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 1] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+        data[index + 2] += Math.random() * this.noiseIntensity - this.noiseIntensity / 2;
+      }
     }
+
+    this.ctx.putImageData(imageData, 0, 0);
   }
 }

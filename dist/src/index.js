@@ -1,7 +1,7 @@
 import { ImageLocal } from "./ImageLocal.js";
 import { ImageType } from "./ImageType.js";
 import { MathImg } from "./MathImg.js";
-import { Particle, DynamicRGBEdges, RainbowEdges } from "./particle.js";
+import { Particle, DynamicRGBNoise } from "./particle.js";
 import { ParticleText } from "./particle.js";
 import { CanvasLocal } from './canvasLocal.js';
 var lienzo1;
@@ -388,34 +388,18 @@ function tAfin(evt) {
     imagenSal.imageArray2DtoData(pantalla2, MathImg.tAfin(imagenSal, factores));
 }
 //comienzo del proyecto
-var dynamicRGBEdges;
-function initDynamicRGBEdges() {
-    dynamicRGBEdges = new DynamicRGBEdges(ctx, 20);
+var dynamicRGBNoiseEffect;
+function initDynamicRGBNoiseEffect() {
+    var img = imgLocal.getImage();
+    dynamicRGBNoiseEffect = new DynamicRGBNoise(pantalla2, img, 20, 500);
 }
-function animateDynamicRGBEdges() {
-    ctx.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
-    ctx.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
-    dynamicRGBEdges.applyEffect();
-    requestAnimationFrame(animateDynamicRGBEdges);
+function animateDynamicRGBNoiseEffect() {
+    dynamicRGBNoiseEffect.applyEffect();
+    requestAnimationFrame(animateDynamicRGBNoiseEffect);
 }
-function bordesRGB() {
-    initDynamicRGBEdges();
-    animateDynamicRGBEdges();
-}
-//efecto2 
-var rainbowEdges;
-function initRainbowEdges() {
-    rainbowEdges = new RainbowEdges(ctx, 20, 800); // Aumenté el intervalo a 500 ms
-}
-function animateRainbowEdges() {
-    ctx.clearRect(0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
-    ctx.drawImage(imgLocal.getImage(), 0, 0, pantalla2.canvas.width, pantalla2.canvas.height);
-    rainbowEdges.applyEffect();
-    requestAnimationFrame(animateRainbowEdges);
-}
-function RGB2() {
-    initRainbowEdges();
-    animateRainbowEdges();
+function Bordesruido() {
+    initDynamicRGBNoiseEffect();
+    animateDynamicRGBNoiseEffect();
 }
 lienzo1.addEventListener('mousemove', handleMouse);
 lienzo1.addEventListener("mousemove", imgLocal.drawSmallImg);
@@ -483,5 +467,4 @@ document.getElementById("op-shearingX").addEventListener('click', shearingX, fal
 document.getElementById("op-shearingY").addEventListener('click', shearingY, false);
 document.getElementById("op-afin").addEventListener('click', tAfin, false);
 //operaciones de proyecto 
-document.getElementById("bordesRGB").addEventListener('click', bordesRGB, false);
-document.getElementById("bordesRGB2").addEventListener('click', RGB2, false);
+document.getElementById("Bordesruido").addEventListener('click', Bordesruido, false);
