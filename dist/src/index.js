@@ -492,7 +492,7 @@ function animateLightTrailsEffect() {
     lightTrailsEffect.draw();
     requestAnimationFrame(animateLightTrailsEffect);
 }
-function Lineasdecolor() {
+function escaner() {
     initLightTrailsEffect();
     animateLightTrailsEffect();
 }
@@ -524,5 +524,5 @@ document.getElementById("Bordergb").addEventListener('click', Bordergb, false);
 document.getElementById("Snowfall").addEventListener('click', Snowfall, false);
 document.getElementById("Arcoiris").addEventListener('click', Arcoiris, false);
 document.getElementById("triangulos").addEventListener('click', triangulos, false);
-document.getElementById("lineasdecolor").addEventListener('click', Lineasdecolor, false);
+document.getElementById("escaner").addEventListener('click', escaner, false);
 document.getElementById("lineasdecolor2").addEventListener('click', lineasdecolor2, false);
